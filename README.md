@@ -112,6 +112,10 @@ Set `PUBLIC_BASE_URL` in production so returned URLs use your public domain inst
 
 Set `ARTIFACT_SIGNING_SECRET` in production so receipt signatures are stable and private.
 
+## Deploy on Railway
+
+See [RAILWAY.md](RAILWAY.md) for the Railway variables, volume setup, and production smoke tests.
+
 ## Verify
 
 ```bash
