@@ -1,0 +1,29 @@
+{
+  "name": "x402-agent-artifact-hosting",
+  "version": "0.1.0",
+  "description": "A paid x402 endpoint that publishes immutable signed reports, receipts, and handoff pages for agents.",
+  "type": "module",
+  "scripts": {
+    "dev": "node node_modules/tsx/dist/cli.mjs src/server.ts",
+    "build": "node node_modules/typescript/bin/tsc",
+    "start": "node dist/server.js",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
+    "demo": "npm run build && node scripts/demo-flow.mjs",
+    "demo:approval": "npm run build && node scripts/approval-demo.mjs",
+    "demo:seed": "npm run build && node scripts/seed-demo.mjs"
+  },
+  "dependencies": {
+    "@x402/core": "latest",
+    "@x402/evm": "latest",
+    "@x402/express": "latest",
+    "@x402/svm": "latest",
+    "express": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/express": "latest",
+    "@types/node": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}
