@@ -1,5 +1,5 @@
-export function openapiSpec(options: { port: number }) {
-  const serverUrl = `http://localhost:${options.port}`;
+export function openapiSpec(options: { baseUrl: string }) {
+  const serverUrl = options.baseUrl;
 
   const spec = {
     openapi: "3.1.0",
@@ -50,7 +50,7 @@ export function openapiSpec(options: { port: number }) {
         post: {
           operationId: "previewX402LaunchReadiness",
           summary: "Free preview audit for an x402 endpoint",
-          requestBody: auditRequestBody(),
+          requestBody: auditRequestBody(serverUrl),
           responses: {
             "200": {
               description: "Preview audit",
@@ -539,6 +539,7 @@ export function openapiSpec(options: { port: number }) {
           summary: "Audit an x402 endpoint for launch readiness",
           amount: "0.10",
           responseDescription: "Launch readiness audit",
+          serverUrl,
         }),
       },
       "/api/deep-audit": {
@@ -547,6 +548,7 @@ export function openapiSpec(options: { port: number }) {
           summary: "Deep x402 launch, runtime, and revenue audit",
           amount: "0.75",
           responseDescription: "Deep launch audit",
+          serverUrl,
         }),
       },
       "/api/generate-fix": {
@@ -555,6 +557,7 @@ export function openapiSpec(options: { port: number }) {
           summary: "Generate OpenAPI, x402 discovery, and listing fixes",
           amount: "2.00",
           responseDescription: "Generated launch fix artifacts",
+          serverUrl,
         }),
       },
       "/api/demo/insight": {
@@ -649,7 +652,7 @@ export function openapiSpec(options: { port: number }) {
                   demo: {
                     value: {
                       endpoints: [
-                        { url: "http://localhost:4021/api/demo/insight", method: "POST", body: { topic: "agent payments" } },
+                        { url: `${serverUrl}/api/demo/insight`, method: "POST", body: { topic: "agent payments" } },
                       ],
                     },
                   },
@@ -875,6 +878,7 @@ function paidOperation(input: {
   summary: string;
   amount: string;
   responseDescription: string;
+  serverUrl: string;
 }) {
   return {
     operationId: input.operationId,
@@ -883,7 +887,7 @@ function paidOperation(input: {
       protocols: ["x402"],
       price: { mode: "fixed", currency: "USD", amount: input.amount },
     },
-    requestBody: auditRequestBody(),
+    requestBody: auditRequestBody(input.serverUrl),
     responses: {
       "200": {
         description: input.responseDescription,
@@ -1016,7 +1020,7 @@ function packetPreviewParameters() {
   ];
 }
 
-function auditRequestBody() {
+function auditRequestBody(serverUrl: string) {
   return {
     required: true,
     content: {
@@ -1040,7 +1044,7 @@ function auditRequestBody() {
         examples: {
           demo: {
             value: {
-              url: "http://localhost:4021/api/demo/insight",
+              url: `${serverUrl}/api/demo/insight`,
               method: "POST",
               body: { topic: "agent payments" },
             },

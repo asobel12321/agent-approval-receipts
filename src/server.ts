@@ -374,7 +374,7 @@ app.get(["/approve/:approvalId", "/approve/:approvalId/"], async (request, respo
 });
 
 app.get("/openapi.json", (_request, response) => {
-  response.json(openapiSpec({ port }));
+  response.json(openapiSpec({ baseUrl: baseUrl() }));
 });
 
 app.get("/.well-known/x402", (_request, response) => {
@@ -859,11 +859,13 @@ app.listen(port, () => {
 });
 
 function x402Discovery() {
+  const publicBaseUrl = baseUrl();
+
   return {
     name: "Agent Approval Receipts",
     description:
       "An x402-paid approval and receipt endpoint for agents that need human checkpoints before taking action.",
-    openapi: `http://localhost:${port}/openapi.json`,
+    openapi: `${publicBaseUrl}/openapi.json`,
     resources: [
       paidResource("/v1/artifacts", "POST", "$0.10", "Create an immutable signed agent artifact"),
       paidResource("/v1/approvals", "POST", "$0.25", "Create an approval page with signed metadata"),
@@ -873,7 +875,7 @@ function x402Discovery() {
 
 function paidResource(path: string, method: AuditInput["method"], price: string, description: string) {
   return {
-    url: `http://localhost:${port}${path}`,
+    url: `${baseUrl()}${path}`,
     method,
     description,
     accepts: paymentOptions(price),
@@ -985,7 +987,7 @@ function demoInsightInput(value: unknown) {
 }
 
 function baseUrl() {
-  return process.env.PUBLIC_BASE_URL ?? `http://localhost:${port}`;
+  return (process.env.PUBLIC_BASE_URL ?? `http://localhost:${port}`).replace(/\/+$/, "");
 }
 
 function paymentOptions(price: string): PaymentOption[] {
